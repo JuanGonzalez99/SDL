@@ -46,12 +46,6 @@
 #endif
 
 //*****************************************************************************
-//               DECLARACION DE VARIABLES Y PROTOTIPOS GLOBALES
-//=============================================================================
-const int anchoPantalla = 800;
-const int altoPantalla = 600;
-
-//*****************************************************************************
 //                             INCLUSIONES ESTANDAR
 //=============================================================================
 #include <iostream> // Libreria de flujos de  Entrada/Salida  que contiene  los
@@ -59,17 +53,36 @@ const int altoPantalla = 600;
 
 #include <cstdlib>  // Libreria estandar que contiene la funcion exit().
 
+#include "CSYSTEM/csystem.h" // Libreria para multiplataforma.
+
+//Librerias de SDL
+#include "SDL/SDL.h"
+#include "SDL/SDL_image.h"
+#include "SDL/SDL_ttf.h"
+
+//*****************************************************************************
+//               DECLARACION DE VARIABLES Y PROTOTIPOS GLOBALES
+//=============================================================================
+const int anchoPantalla = 800;
+const int altoPantalla = 600;
+const int bitsPorPixel = 32;
+
+SDL_Surface *background = NULL;
+SDL_Surface *message = NULL;
+SDL_Surface *screen = NULL;
+SDL_Surface *image = NULL;
+
+TTF_Font *font = NULL;
+SDL_Color textColor = { 255, 255, 255 };
+
 //*****************************************************************************
 //                             INCLUSIONES PERSONALES
 //=============================================================================
-#include "CSYSTEM/csystem.h" // Libreria para multiplataforma.
-#include "SDL/SDL.h" // Libreria de SDL.
-
+#include "funciones.h"
 
 //==============================================================================
 // DECLARACION DEL ESPACIO DE NOMBRES POR DEFECTO
 //------------------------------------------------------------------------------
-using namespace std;
 
 
 //==============================================================================
@@ -77,30 +90,22 @@ using namespace std;
 //------------------------------------------------------------------------------
 int main(int argc, char* args[])
 {
-    bool running = true;
+    bool terminarPrograma = false;
 
     //Inicializar SDL
-    if(SDL_Init( SDL_INIT_EVERYTHING ) == -1)
-    {
-        running = false;
-    }
+    if( init() == false )
+        return 1;
 
-    //Creacion de la pantalla
-    SDL_Surface *screen;
-    screen = SDL_SetVideoMode(anchoPantalla, altoPantalla, 32, SDL_HWSURFACE);
-    SDL_WM_SetCaption("Macri cat", NULL);
+    //Carga de archivos
+    if( cargar_archivos() == false )
+        return 1;
 
-    if(screen == NULL)
-    {
-        running = false;
-    }
+    //Permitimos enttrada y salida por consola
+//    freopen( "CON", "w", stdout );
+//    freopen( "CON", "w", stderr );
+
     //Nuestro evento
     SDL_Event event;
-
-    //Variables de imagenes
-    SDL_Surface* loadedImage = SDL_LoadBMP("Sprites.bmp");
-    SDL_Surface* image = SDL_DisplayFormat(loadedImage);
-    SDL_FreeSurface(loadedImage);
 
     int frameActual = 0, maxFrame = 3;
 
@@ -119,104 +124,116 @@ int main(int argc, char* args[])
     SDL_SetColorKey(image, SDL_SRCCOLORKEY, colorkey);
 
     //Loop principal de la aplicacion
-    while(running)
+    while(!terminarPrograma)
     {
-        SDL_PollEvent(&event);
-
-        if(event.type == SDL_QUIT)
-        {
-            running = false;
-        }
-
-        //El dibujado ocurre aca
-        SDL_FillRect(screen, NULL, 0);
-
-        SDL_BlitSurface(image, &frame, screen, &offset);
-
-        if(event.type == SDL_KEYDOWN)
-        {
-            switch(event.key.keysym.sym)
+//        while(SDL_PollEvent(&event))
+//        {
+            SDL_PollEvent(&event);
+            if(event.type == SDL_QUIT)
             {
-            case SDLK_w:
-            case SDLK_UP:
-                {
-                    frame.y = 3 * frame.h;
-                    offset.y -= 1;
-                    frameActual++;
-                    if(frameActual>maxFrame)
-                    {
-                        frameActual = 0;
-                    }
-                    frame.x = frameActual*frame.w;
-                }break;
-            case SDLK_a:
-            case SDLK_LEFT:
-                {
-                    frame.y = 1 * frame.h;
-                    offset.x -= 1;
-                    frameActual++;
-                    if(frameActual>maxFrame)
-                    {
-                        frameActual = 0;
-                    }
-                    frame.x = frameActual*frame.w;
-                }break;
-            case SDLK_s:
-            case SDLK_DOWN:
-                {
-                    frame.y = 0 * frame.h;
-                    if(offset.y<(altoPantalla-frame.h))
-                    {
-                        offset.y += 1;
-                    }
-                    frameActual++;
-                    if(frameActual>maxFrame)
-                    {
-                        frameActual = 0;
-                    }
-                    frame.x = frameActual*frame.w;
-                }break;
-            case SDLK_d:
-            case SDLK_RIGHT:
-                {
-                    frame.y = 2 * frame.h;
-                    if(offset.x<(anchoPantalla-frame.w+10))
-                    {
-                        offset.x += 1;
-                    }
-                    frameActual++;
-                    if(frameActual>maxFrame)
-                    {
-                        frameActual = 0;
-                    }
-                    frame.x = frameActual*frame.w;
-                }break;
-            case SDLK_ESCAPE:
-                {
-                    running = false;
-                }break;
-            default:
-                {
+                terminarPrograma = true;
+            }
 
-                }
-            }//Fin switch
+            //El dibujado ocurre aca
+            SDL_FillRect(screen, NULL, 0);
 
-        }//Fin if
+            SDL_BlitSurface(image, &frame, screen, &offset);
+
+            if(event.type == SDL_MOUSEMOTION)
+            {
+                offset.x = event.motion.x - frame.w/2;
+                offset.y = event.motion.y - frame.h/2;
+                if(offset.x < 0)
+                    offset.x = 0;
+                if(offset.y < 0)
+                    offset.y = 0;
+            }
+
+            if(event.type == SDL_KEYDOWN)
+            {
+                switch(event.key.keysym.sym)
+                {
+                case SDLK_w:
+                case SDLK_UP:
+                    {
+                        frame.y = 3 * frame.h;
+                        offset.y -= 1;
+                        frameActual++;
+                        if(frameActual>maxFrame)
+                        {
+                            frameActual = 0;
+                        }
+                        frame.x = frameActual*frame.w;
+                    }break;
+                case SDLK_a:
+                case SDLK_LEFT:
+                    {
+                        frame.y = 1 * frame.h;
+                        offset.x -= 1;
+                        frameActual++;
+                        if(frameActual>maxFrame)
+                        {
+                            frameActual = 0;
+                        }
+                        frame.x = frameActual*frame.w;
+                    }break;
+                case SDLK_s:
+                case SDLK_DOWN:
+                    {
+
+                        frame.y = 0 * frame.h;
+                        if(offset.y<(altoPantalla-frame.h))
+                        {
+                            offset.y += 1;
+                        }
+                        frameActual++;
+                        if(frameActual>maxFrame)
+                        {
+                            frameActual = 0;
+                        }
+                        frame.x = frameActual*frame.w;
+                    }break;
+                case SDLK_d:
+                case SDLK_RIGHT:
+                    {
+                        frame.y = 2 * frame.h;
+                        if(offset.x<(anchoPantalla-frame.w+10))
+                        {
+                            offset.x += 1;
+                        }
+                        frameActual++;
+                        if(frameActual>maxFrame)
+                        {
+                            frameActual = 0;
+                        }
+                        frame.x = frameActual*frame.w;
+                    }break;
+                case SDLK_ESCAPE:
+                    {
+                        terminarPrograma = true;
+                    }break;
+                default:
+                    {}
+                }//Fin switch
+
+            }//Fin if
+
+//        }//Fin while evento
 
         SDL_Flip(screen);
 
-    }
+    }//Fin while principal
 
-    SDL_FreeSurface(image);
-
-    //Terminar SDL
-    SDL_Quit();
+    limpiar_SDL();
 
     //--------------------------------------------------------------------------
     // FIN DE LA FUNCION main() SIN ERRORES.
     //--------------------------------------------------------------------------
     return 0;
 }
+
+
+
 
 //=============================================================================
 //                            FIN DE ARCHIVO
