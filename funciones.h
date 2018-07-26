@@ -42,11 +42,18 @@ bool init()
 
 bool cargar_archivos()
 {
-    //Cargamos la imagen
+    //Cargamos la imagen con los sprites
     image = cargar_imagen( "Sprites.png" );
 
     //Si hubo un error al cargar la imagen
     if( image == NULL)
+        return false;
+
+    //Cargamos el fondo
+    background = cargar_imagen( "Fondo.png" );
+
+    //Si hubo un error al cargar la imagen
+    if( background == NULL)
         return false;
 
     //Abrimos la fuente
@@ -60,7 +67,7 @@ bool cargar_archivos()
     return true;
 }
 
-void aplicar_superficie( int x, int y, SDL_Surface* fuente, SDL_Surface* destino, SDL_Rect* clip = NULL )
+void aplicar_superficie( SDL_Surface* fuente, SDL_Surface* destino, int x=0, int y=0, SDL_Rect* clip = NULL )
 {
     SDL_Rect offset;
     offset.x = x;
@@ -97,7 +104,7 @@ void manejo_texto()
         message = TTF_RenderText_Solid(font, "", textColor);
 
 
-    aplicar_superficie(50, 200, message, screen);
+    aplicar_superficie(message, screen, 50, 200);
 }
 
 #endif // FUNCIONES_H_INCLUDED

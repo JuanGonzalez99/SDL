@@ -59,6 +59,7 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include "SDL/SDL_ttf.h"
+#include "SDL/SDL_mixer.h"
 
 //*****************************************************************************
 //               DECLARACION DE VARIABLES Y PROTOTIPOS GLOBALES
@@ -126,8 +127,9 @@ int main(int argc, char* args[])
                 terminarPrograma = true;
             }
 
-            //El dibujado ocurre aca
             SDL_FillRect(screen, NULL, 0);
+
+            aplicar_superficie(background, screen);
 
             manejo_texto();
 
@@ -149,7 +151,9 @@ int main(int argc, char* args[])
 
         }//Fin while evento
 
-        SDL_Flip(screen);
+        //Actualizacion de la pantalla
+        if( SDL_Flip(screen) == -1 )
+            return 1;
 
     }//Fin while principal
 

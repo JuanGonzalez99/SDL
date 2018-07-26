@@ -6,7 +6,7 @@ class Personaje
 public:
     Personaje(int x, int y);
     void manejar_eventos();
-//        virtual ~Personaje();
+        virtual ~Personaje();
 
 protected:
 
@@ -27,6 +27,11 @@ Personaje::Personaje(int X=0, int Y=0)
     frame.h = 192;
 
     modoFantasma = false;
+}
+
+Personaje::~Personaje()
+{
+
 }
 
 void Personaje::manejar_eventos()
