@@ -67,18 +67,25 @@ const int anchoPantalla = 800;
 const int altoPantalla = 600;
 const int bitsPorPixel = 32;
 
+int largoPasos = 30;
+
+int frameActual = 0, maxFrame = 3;
+
 SDL_Surface *background = NULL;
 SDL_Surface *message = NULL;
 SDL_Surface *screen = NULL;
 SDL_Surface *image = NULL;
 
+SDL_Event event;
+
 TTF_Font *font = NULL;
-SDL_Color textColor = { 255, 255, 255 };
+SDL_Color textColor = { 255, 0, 255 };
 
 //*****************************************************************************
 //                             INCLUSIONES PERSONALES
 //=============================================================================
 #include "funciones.h"
+#include "Personaje.h"
 
 //==============================================================================
 // DECLARACION DEL ESPACIO DE NOMBRES POR DEFECTO
@@ -90,8 +97,6 @@ SDL_Color textColor = { 255, 255, 255 };
 //------------------------------------------------------------------------------
 int main(int argc, char* args[])
 {
-    bool terminarPrograma = false;
-
     //Inicializar SDL
     if( init() == false )
         return 1;
@@ -100,35 +105,22 @@ int main(int argc, char* args[])
     if( cargar_archivos() == false )
         return 1;
 
-    //Permitimos enttrada y salida por consola
-//    freopen( "CON", "w", stdout );
-//    freopen( "CON", "w", stderr );
+    //Booleano para saber si el usuario quiere finalizar el programa
+    bool terminarPrograma = false;
 
-    //Nuestro evento
-    SDL_Event event;
+    //Creamos un objeto de la clase Personaje
+    Personaje personajePrincipal;
 
-    int frameActual = 0, maxFrame = 3;
-
-    SDL_Rect frame;
-    frame.x = 0;
-    frame.y = 0;
-    frame.w = 144;
-    frame.h = 192;
-
-    SDL_Rect offset;
-    offset.x = 0;
-    offset.y = 0;
-
+    //Sacamos el fondo rosa de la imagen
     Uint32 colorkey = SDL_MapRGB(image->format, 255, 0, 255);
-
     SDL_SetColorKey(image, SDL_SRCCOLORKEY, colorkey);
 
     //Loop principal de la aplicacion
     while(!terminarPrograma)
     {
-//        while(SDL_PollEvent(&event))
-//        {
-            SDL_PollEvent(&event);
+        while(SDL_PollEvent(&event))
+        {
+//            SDL_PollEvent(&event);
             if(event.type == SDL_QUIT)
             {
                 terminarPrograma = true;
@@ -137,77 +129,12 @@ int main(int argc, char* args[])
             //El dibujado ocurre aca
             SDL_FillRect(screen, NULL, 0);
 
-            SDL_BlitSurface(image, &frame, screen, &offset);
+            manejo_texto();
 
-            if(event.type == SDL_MOUSEMOTION)
-            {
-                offset.x = event.motion.x - frame.w/2;
-                offset.y = event.motion.y - frame.h/2;
-                if(offset.x < 0)
-                    offset.x = 0;
-                if(offset.y < 0)
-                    offset.y = 0;
-            }
-
-            if(event.type == SDL_KEYDOWN)
+            if( event.type == SDL_KEYDOWN )
             {
                 switch(event.key.keysym.sym)
                 {
-                case SDLK_w:
-                case SDLK_UP:
-                    {
-                        frame.y = 3 * frame.h;
-                        offset.y -= 1;
-                        frameActual++;
-                        if(frameActual>maxFrame)
-                        {
-                            frameActual = 0;
-                        }
-                        frame.x = frameActual*frame.w;
-                    }break;
-                case SDLK_a:
-                case SDLK_LEFT:
-                    {
-                        frame.y = 1 * frame.h;
-                        offset.x -= 1;
-                        frameActual++;
-                        if(frameActual>maxFrame)
-                        {
-                            frameActual = 0;
-                        }
-                        frame.x = frameActual*frame.w;
-                    }break;
-                case SDLK_s:
-                case SDLK_DOWN:
-                    {
-
-                        frame.y = 0 * frame.h;
-                        if(offset.y<(altoPantalla-frame.h))
-                        {
-                            offset.y += 1;
-                        }
-                        frameActual++;
-                        if(frameActual>maxFrame)
-                        {
-                            frameActual = 0;
-                        }
-                        frame.x = frameActual*frame.w;
-                    }break;
-                case SDLK_d:
-                case SDLK_RIGHT:
-                    {
-                        frame.y = 2 * frame.h;
-                        if(offset.x<(anchoPantalla-frame.w+10))
-                        {
-                            offset.x += 1;
-                        }
-                        frameActual++;
-                        if(frameActual>maxFrame)
-                        {
-                            frameActual = 0;
-                        }
-                        frame.x = frameActual*frame.w;
-                    }break;
                 case SDLK_ESCAPE:
                     {
                         terminarPrograma = true;
@@ -218,7 +145,9 @@ int main(int argc, char* args[])
 
             }//Fin if
 
-//        }//Fin while evento
+            personajePrincipal.manejar_eventos();
+
+        }//Fin while evento
 
         SDL_Flip(screen);
 
