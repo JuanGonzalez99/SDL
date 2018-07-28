@@ -51,9 +51,9 @@
 #include <iostream> // Libreria de flujos de  Entrada/Salida  que contiene  los
                     // objetos cin, cout y endl.
 
-#include <cstdlib>  // Libreria estandar que contiene la funcion exit().
+//#include <cstdlib>  // Libreria estandar que contiene la funcion exit().
 
-#include "CSYSTEM/csystem.h" // Libreria para multiplataforma.
+//#include "CSYSTEM/csystem.h" // Libreria para multiplataforma.
 
 //Librerias de SDL
 #include "SDL/SDL.h"
@@ -68,25 +68,34 @@ const int anchoPantalla = 800;
 const int altoPantalla = 600;
 const int bitsPorPixel = 32;
 
+const int altoFrame = 192;
+const int anchoFrame = 144;
+
 int largoPasos = 30;
 
 int frameActual = 0, maxFrame = 3;
 
-SDL_Surface *background = NULL;
-SDL_Surface *message = NULL;
-SDL_Surface *screen = NULL;
-SDL_Surface *image = NULL;
+bool arrastrarPersonaje = false;
+
+SDL_Surface* background = NULL;
+SDL_Surface* message = NULL;
+SDL_Surface* screen = NULL;
+SDL_Surface* image = NULL;
 
 SDL_Event event;
 
-TTF_Font *font = NULL;
-SDL_Color textColor = { 255, 0, 255 };
+TTF_Font* font = NULL;
+SDL_Color textColor = { 0, 0, 0 };
+
+Mix_Music* musica = NULL;
 
 //*****************************************************************************
 //                             INCLUSIONES PERSONALES
 //=============================================================================
-#include "funciones.h"
+#include "funciones_SDL.h"
 #include "Personaje.h"
+#include "funciones.h"
+#include "estructura.h"
 
 //==============================================================================
 // DECLARACION DEL ESPACIO DE NOMBRES POR DEFECTO
@@ -110,43 +119,25 @@ int main(int argc, char* args[])
     bool terminarPrograma = false;
 
     //Creamos un objeto de la clase Personaje
-    Personaje personajePrincipal;
-
-    //Sacamos el fondo rosa de la imagen
-    Uint32 colorkey = SDL_MapRGB(image->format, 255, 0, 255);
-    SDL_SetColorKey(image, SDL_SRCCOLORKEY, colorkey);
+    Personaje personajePrincipal((anchoPantalla - anchoFrame)/2, (altoPantalla - altoFrame)/2);
 
     //Loop principal de la aplicacion
-    while(!terminarPrograma)
+    while( terminarPrograma == false )
     {
         while(SDL_PollEvent(&event))
         {
-//            SDL_PollEvent(&event);
+            //Si toca la x de la ventana, que termine el programa
             if(event.type == SDL_QUIT)
-            {
                 terminarPrograma = true;
-            }
 
-            SDL_FillRect(screen, NULL, 0);
+            //Si toca la tecla Esc, también
+            if( event.key.keysym.sym == SDLK_ESCAPE )
+                terminarPrograma = true;
 
+            //Ponemos el fondo
             aplicar_superficie(background, screen);
 
-            manejo_texto();
-
-            if( event.type == SDL_KEYDOWN )
-            {
-                switch(event.key.keysym.sym)
-                {
-                case SDLK_ESCAPE:
-                    {
-                        terminarPrograma = true;
-                    }break;
-                default:
-                    {}
-                }//Fin switch
-
-            }//Fin if
-
+            //Manejo del movimiento del personaje
             personajePrincipal.manejar_eventos();
 
         }//Fin while evento
@@ -158,7 +149,6 @@ int main(int argc, char* args[])
     }//Fin while principal
 
     limpiar_SDL();
-
     //--------------------------------------------------------------------------
     // FIN DE LA FUNCION main() SIN ERRORES.
     //--------------------------------------------------------------------------
