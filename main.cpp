@@ -118,8 +118,9 @@ int main(int argc, char* args[])
     //Booleano para saber si el usuario quiere finalizar el programa
     bool terminarPrograma = false;
 
-    //Creamos un objeto de la clase Personaje
-    Personaje personajePrincipal((anchoPantalla - anchoFrame)/2, (altoPantalla - altoFrame)/2);
+    //Ponemos la música cuando empieza el programa
+    if( Mix_PlayMusic( musica, -1 ) == -1 )
+        return 1;
 
     //Loop principal de la aplicacion
     while( terminarPrograma == false )
@@ -134,22 +135,10 @@ int main(int argc, char* args[])
             if( event.key.keysym.sym == SDLK_ESCAPE )
                 terminarPrograma = true;
 
-            //Ponemos el fondo
-            aplicar_superficie(background, screen);
+            if( manejo_musica() == false )
+                return 1;
 
-            //Ponemos los mensajes
-            message = TTF_RenderText_Solid(font, "Tab = Modo Fantasma", textColor);
-            aplicar_superficie(message, screen, 0, 0);
-
-            message = TTF_RenderText_Solid(font, "WASD o flechas para", textColor);
-            aplicar_superficie(message, screen, anchoPantalla/2, altoPantalla - (message->h * 2));
-            message = TTF_RenderText_Solid(font, " mover el personaje", textColor);
-            aplicar_superficie(message, screen, anchoPantalla/2, altoPantalla - message->h);
-
-            SDL_FreeSurface(message);
-
-            //Manejo del movimiento del personaje
-            personajePrincipal.manejar_eventos();
+            estructura();
 
         }//Fin while evento
 

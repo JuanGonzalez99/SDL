@@ -50,7 +50,7 @@ bool cargar_archivos()
     image = cargar_imagen( "Sprites.png" );
 
     //Si hubo un error al cargar la imagen
-    if( image == NULL)
+    if( image == NULL )
         return false;
 
     //Sacamos el fondo rosa de la imagen
@@ -61,7 +61,7 @@ bool cargar_archivos()
     background = cargar_imagen( "Fondo.png" );
 
     //Si hubo un error al cargar la imagen
-    if( background == NULL)
+    if( background == NULL )
         return false;
 
     //Abrimos la fuente
@@ -69,6 +69,11 @@ bool cargar_archivos()
 
     //Si hubo un error al cargar la fuente
     if( font == NULL )
+        return false;
+
+    musica = Mix_LoadMUS("Final Fantasy IX - The Place I'll Return To Someday.wav");
+
+    if( musica == NULL )
         return false;
 
     //Si todo cargo correctamente
@@ -90,6 +95,9 @@ void limpiar_SDL()
 
     TTF_CloseFont( font );
 
+    Mix_FreeMusic( musica );
+
+    Mix_CloseAudio();
     TTF_Quit();
     SDL_Quit();
 }

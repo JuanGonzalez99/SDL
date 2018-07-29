@@ -169,6 +169,7 @@ void Personaje::manejar_eventos()
 
 }//Fin funcion
 
-
+//Creamos un objeto de la clase Personaje
+Personaje personajePrincipal((anchoPantalla - anchoFrame)/2, (altoPantalla - altoFrame)/2);
 
 #endif // PERSONAJE_H
