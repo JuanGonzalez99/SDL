@@ -8,14 +8,18 @@ public:
     bool getModoFantasma();
     void setModoFantasma(bool);
     SDL_Rect getOffset();
+    void cambiar_frame_movimiento();
     void manejar_eventos();
-        virtual ~Personaje();
+    void mover();
+    void mostrar();
 
 protected:
 
 private:
     SDL_Rect frame;
     SDL_Rect offset;
+    int xVel, yVel;
+    bool arrastrar;
     bool modoFantasma;
 };
 
@@ -29,6 +33,10 @@ Personaje::Personaje(int X=0, int Y=0)
     frame.w = anchoFrame;
     frame.h = altoFrame;
 
+    xVel = 0;
+    yVel = 0;
+
+    arrastrar = false;
     modoFantasma = false;
 }
 
@@ -47,9 +55,12 @@ SDL_Rect Personaje::getOffset()
     return offset;
 }
 
-Personaje::~Personaje()
+void Personaje::cambiar_frame_movimiento()
 {
-
+    frameActual++;
+    if(frameActual>maxFrame)
+        frameActual = 0;
+    frame.x = frameActual*frame.w;
 }
 
 void Personaje::manejar_eventos()
@@ -64,24 +75,13 @@ void Personaje::manejar_eventos()
         if( x >= offset.x && x <= (offset.x + frame.w) &&
             y >= offset.y && y <= (offset.y + frame.h) )
         {
-            arrastrarPersonaje = true;
+            arrastrar = true;
         }
     }
 
     //Si suelta el click izquierdo
     if( event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT )
-        arrastrarPersonaje = false;
-
-    //Si mueve el mouse mientras está haciendo click sobre la imagen
-    if( event.type == SDL_MOUSEMOTION && arrastrarPersonaje )
-    {
-        offset.x = event.motion.x - frame.w/2;
-        offset.y = event.motion.y - frame.h/2;
-        if(offset.x < 0)
-            offset.x = 0;
-        if(offset.y < 0)
-            offset.y = 0;
-    }
+        arrastrar = false;
 
     if( event.type == SDL_KEYDOWN )
     {
@@ -90,61 +90,30 @@ void Personaje::manejar_eventos()
         case SDLK_w:
         case SDLK_UP:
         {
-            //Cambio de frame de direccion
-            frame.y = 3 * frame.h;
+            yVel -= largoPasos;
 
-            //Desplazamiento del personaje
-            offset.y -= largoPasos;
-            if( offset.y < largoPasos )
-                offset.y = 0;
-
-            //Cambio de frame de movimiento
-            frameActual++;
-            if(frameActual>maxFrame)
-                frameActual = 0;
-            frame.x = frameActual*frame.w;
+            cambiar_frame_movimiento();
         }break;
         case SDLK_a:
         case SDLK_LEFT:
         {
-            frame.y = 1 * frame.h;
+            xVel -= largoPasos;
 
-            offset.x -= largoPasos;
-            if( offset.x < largoPasos )
-                offset.x = 0;
-
-            frameActual++;
-            if(frameActual>maxFrame)
-                frameActual = 0;
-            frame.x = frameActual*frame.w;
+            cambiar_frame_movimiento();
         }break;
         case SDLK_s:
         case SDLK_DOWN:
         {
-            frame.y = 0 * frame.h;
+            yVel += largoPasos;
 
-            offset.y += largoPasos;
-            if( offset.y > altoPantalla - frame.h )
-                offset.y = altoPantalla - frame.h;
-
-            frameActual++;
-            if(frameActual>maxFrame)
-                frameActual = 0;
-            frame.x = frameActual*frame.w;
+            cambiar_frame_movimiento();
         }break;
         case SDLK_d:
         case SDLK_RIGHT:
         {
-            frame.y = 2 * frame.h;
+            xVel += largoPasos;
 
-            offset.x += largoPasos;
-            if( offset.x > anchoPantalla- frame.w )
-                offset.x = anchoPantalla - frame.w;
-
-            frameActual++;
-            if(frameActual>maxFrame)
-                frameActual = 0;
-            frame.x = frameActual*frame.w;
+            cambiar_frame_movimiento();
         }break;
         case SDLK_TAB:
         {
@@ -165,9 +134,90 @@ void Personaje::manejar_eventos()
 
     }//Fin if
 
-    SDL_BlitSurface(image, &frame, screen, &offset);
+    else if( event.type == SDL_KEYUP )
+    {
+        switch( event.key.keysym.sym )
+        {
+            case SDLK_w:
+            case SDLK_UP:
+                {
+                    yVel += largoPasos;
+                }break;
+            case SDLK_a:
+            case SDLK_LEFT:
+                {
+                    xVel += largoPasos;
+                }break;
+            case SDLK_s:
+            case SDLK_DOWN:
+                {
+                    yVel -= largoPasos;
+                }break;
+            case SDLK_d:
+            case SDLK_RIGHT:
+                {
+                    xVel -= largoPasos;
+                }break;
+            default: {}
+        }
+    }
+}
 
-}//Fin funcion
+void Personaje::mover()
+{
+    //Si mueve el mouse mientras está haciendo click sobre la imagen
+    if( event.type == SDL_MOUSEMOTION && arrastrar )
+    {
+        offset.x = event.motion.x - frame.w/2;
+        offset.y = event.motion.y - frame.h/2;
+        if(offset.x < 0)
+            offset.x = 0;
+        if(offset.y < 0)
+            offset.y = 0;
+    }
+    else
+    {
+        offset.x += xVel;
+
+        if( offset.x < 0 )
+            offset.x = 0;
+        else if( (offset.x + anchoFrame) > anchoPantalla )
+            offset.x = anchoPantalla - anchoFrame;
+
+        offset.y += yVel;
+
+        if( offset.y < 0 )
+            offset.y = 0;
+        else if( (offset.y + altoFrame) > altoPantalla )
+            offset.y = altoPantalla - altoFrame;
+    }
+}
+
+void Personaje::mostrar()
+{
+    if( yVel < 0 )
+    {
+        //Cambio de frame de direccion
+        frame.y = 3 * frame.h;
+        cambiar_frame_movimiento();
+    }
+    else if( xVel < 0 )
+    {
+        frame.y = 1 * frame.h;
+        cambiar_frame_movimiento();
+    }
+    else if( yVel > 0 )
+    {
+        frame.y = 0 * frame.h;
+        cambiar_frame_movimiento();
+    }
+    else if( xVel > 0 )
+    {
+        frame.y = 2 * frame.h;
+        cambiar_frame_movimiento();
+    }
+    aplicar_superficie(image, screen, offset.x, offset.y, &frame);
+}
 
 //Creamos un objeto de la clase Personaje
 Personaje personajePrincipal((anchoPantalla - anchoFrame)/2, (altoPantalla - altoFrame)/2);

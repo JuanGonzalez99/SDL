@@ -68,14 +68,16 @@ const int anchoPantalla = 800;
 const int altoPantalla = 600;
 const int bitsPorPixel = 32;
 
+const int framesPorSegundo = 20;
+
 const int altoFrame = 192;
 const int anchoFrame = 144;
 
-int largoPasos = 30;
+int largoPasos = 15;
 
 int frameActual = 0, maxFrame = 3;
 
-bool arrastrarPersonaje = false;
+bool terminarPrograma = false; //Booleano para saber si el usuario quiere finalizar el programa
 
 SDL_Surface* background = NULL;
 SDL_Surface* message = NULL;
@@ -93,6 +95,7 @@ Mix_Music* musica = NULL;
 //                             INCLUSIONES PERSONALES
 //=============================================================================
 #include "funciones_SDL.h"
+#include "Minutero.h"
 #include "Personaje.h"
 #include "funciones.h"
 #include "estructura.h"
@@ -115,40 +118,20 @@ int main(int argc, char* args[])
     if( cargar_archivos() == false )
         return 1;
 
-    //Booleano para saber si el usuario quiere finalizar el programa
-    bool terminarPrograma = false;
+//    //Ponemos la música cuando empieza el programa
+//    if( Mix_PlayMusic( musica, -1 ) == -1 )
+//        return 1;
 
-    //Ponemos la música cuando empieza el programa
-    if( Mix_PlayMusic( musica, -1 ) == -1 )
-        return 1;
-
-    //Loop principal de la aplicacion
-    while( terminarPrograma == false )
+    if( estructura() == false )
     {
-        while(SDL_PollEvent(&event))
-        {
-            //Si toca la x de la ventana, que termine el programa
-            if(event.type == SDL_QUIT)
-                terminarPrograma = true;
-
-            //Si toca la tecla Esc, también
-            if( event.key.keysym.sym == SDLK_ESCAPE )
-                terminarPrograma = true;
-
-            if( manejo_musica() == false )
-                return 1;
-
-            estructura();
-
-        }//Fin while evento
-
-        //Actualizacion de la pantalla
-        if( SDL_Flip(screen) == -1 )
-            return 1;
-
-    }//Fin while principal
-
-    limpiar_SDL();
+        limpiar_SDL();
+        return 1;
+    }
+    else
+    {
+        limpiar_SDL();
+        return 0;
+    }
     //--------------------------------------------------------------------------
     // FIN DE LA FUNCION main() SIN ERRORES.
     //--------------------------------------------------------------------------
