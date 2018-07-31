@@ -1,6 +1,12 @@
 #ifndef FUNCIONES_H_INCLUDED
 #define FUNCIONES_H_INCLUDED
 
+void regular_frames()
+{
+    if( fps.getTicks() < 1000/framesPorSegundo )
+        SDL_Delay(1000/framesPorSegundo - fps.getTicks());
+}
+
 bool manejo_musica()
 {
     if( evento.type == SDL_KEYDOWN )

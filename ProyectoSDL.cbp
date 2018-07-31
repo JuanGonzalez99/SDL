@@ -43,6 +43,7 @@ AYUDANTE : Fernando Calabuig.
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Boton.h" />
 		<Unit filename="CSYSTEM/csystem.h" />
 		<Unit filename="LICENCIA GPL/Licencia GPL (traduccion NO OFICIAL - castellano argentina).txt" />
 		<Unit filename="LICENCIA GPL/Licencia GPL original (ingles).txt" />

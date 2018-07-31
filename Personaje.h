@@ -3,24 +3,24 @@
 
 class Personaje
 {
-public:
-    Personaje(int x, int y);
-    bool getModoFantasma();
-    void setModoFantasma(bool);
-    SDL_Rect getOffset();
-    void cambiar_frame_movimiento();
-    void manejar_eventos();
-    void mover();
-    void mostrar();
+    public:
+        Personaje(int x, int y);
+        bool getModoFantasma();
+        void setModoFantasma(bool);
+        SDL_Rect getOffset();
+        void cambiar_frame_movimiento();
+        void manejar_eventos();
+        void mover();
+        void mostrar();
 
-protected:
+    protected:
 
-private:
-    SDL_Rect frame;
-    SDL_Rect offset;
-    int xVel, yVel;
-    bool arrastrar;
-    bool modoFantasma;
+    private:
+        SDL_Rect frame;
+        SDL_Rect offset;
+        int xVel, yVel;
+        bool arrastrar;
+        bool modoFantasma;
 };
 
 Personaje::Personaje(int X=0, int Y=0)

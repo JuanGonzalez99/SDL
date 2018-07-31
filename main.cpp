@@ -83,6 +83,7 @@ SDL_Surface* fondo = NULL;
 SDL_Surface* mensaje = NULL;
 SDL_Surface* pantalla = NULL;
 SDL_Surface* imagen = NULL;
+SDL_Surface* boton = NULL;
 
 SDL_Event evento;
 
@@ -97,6 +98,7 @@ Mix_Music* musica = NULL;
 #include "funciones_SDL.h"
 #include "Minutero.h"
 #include "Personaje.h"
+#include "Boton.h"
 #include "funciones.h"
 #include "estructura.h"
 

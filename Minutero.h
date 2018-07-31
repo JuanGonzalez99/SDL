@@ -4,23 +4,23 @@
 
 class Minutero
 {
-public:
-    Minutero();
-    void empezar();
-    void parar();
-    void pausar();
-    void reanudar();
-    int getTicks();
-    bool estaEmpezado();
-    bool estaPausado();
+    public:
+        Minutero();
+        void empezar();
+        void parar();
+        void pausar();
+        void reanudar();
+        int getTicks();
+        bool estaEmpezado();
+        bool estaPausado();
 
-protected:
+    protected:
 
-private:
-    int ticksComienzo;
-    int ticksPausa;
-    bool pausado;
-    bool empezado;
+    private:
+        int ticksComienzo;
+        int ticksPausa;
+        bool pausado;
+        bool empezado;
 };
 
 Minutero::Minutero()

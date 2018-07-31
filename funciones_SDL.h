@@ -57,11 +57,11 @@ bool cargar_archivos()
     Uint32 colorkey = SDL_MapRGB(imagen->format, 255, 0, 255);
     SDL_SetColorKey(imagen, SDL_SRCCOLORKEY, colorkey);
 
-    //Cargamos el fondo
-    fondo = cargar_imagen( "Fondo.png" );
+    //Cargamos la imagen del boton
+    boton = cargar_imagen( "boton.png" );
 
     //Si hubo un error al cargar la imagen
-    if( fondo == NULL )
+    if( boton == NULL )
         return false;
 
     //Abrimos la fuente
@@ -92,6 +92,7 @@ void aplicar_superficie( SDL_Surface* fuente, SDL_Surface* destino, int x=0, int
 void limpiar_SDL()
 {
     SDL_FreeSurface( imagen );
+    SDL_FreeSurface( boton );
 
     TTF_CloseFont( fuente );
 
