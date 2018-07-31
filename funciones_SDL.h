@@ -23,10 +23,10 @@ bool init()
         return false;
 
     //Creamos la pantalla
-    screen = SDL_SetVideoMode( anchoPantalla, altoPantalla, bitsPorPixel, SDL_SWSURFACE );
+    pantalla = SDL_SetVideoMode( anchoPantalla, altoPantalla, bitsPorPixel, SDL_SWSURFACE );
 
     //Si hubo un error creando la pantalla
-    if( screen == NULL )
+    if( pantalla == NULL )
         return false;
 
     //Inicializamos SDL_ttf
@@ -47,28 +47,28 @@ bool init()
 bool cargar_archivos()
 {
     //Cargamos la imagen con los sprites
-    image = cargar_imagen( "Sprites.png" );
+    imagen = cargar_imagen( "Sprites.png" );
 
     //Si hubo un error al cargar la imagen
-    if( image == NULL )
+    if( imagen == NULL )
         return false;
 
     //Sacamos el fondo rosa de la imagen
-    Uint32 colorkey = SDL_MapRGB(image->format, 255, 0, 255);
-    SDL_SetColorKey(image, SDL_SRCCOLORKEY, colorkey);
+    Uint32 colorkey = SDL_MapRGB(imagen->format, 255, 0, 255);
+    SDL_SetColorKey(imagen, SDL_SRCCOLORKEY, colorkey);
 
     //Cargamos el fondo
-    background = cargar_imagen( "Fondo.png" );
+    fondo = cargar_imagen( "Fondo.png" );
 
     //Si hubo un error al cargar la imagen
-    if( background == NULL )
+    if( fondo == NULL )
         return false;
 
     //Abrimos la fuente
-    font = TTF_OpenFont( "Fixedsys.ttf", 40 );
+    fuente = TTF_OpenFont( "Fixedsys.ttf", 40 );
 
     //Si hubo un error al cargar la fuente
-    if( font == NULL )
+    if( fuente == NULL )
         return false;
 
     musica = Mix_LoadMUS("Final Fantasy IX - The Place I'll Return To Someday.wav");
@@ -91,9 +91,9 @@ void aplicar_superficie( SDL_Surface* fuente, SDL_Surface* destino, int x=0, int
 
 void limpiar_SDL()
 {
-    SDL_FreeSurface( image );
+    SDL_FreeSurface( imagen );
 
-    TTF_CloseFont( font );
+    TTF_CloseFont( fuente );
 
     Mix_FreeMusic( musica );
 

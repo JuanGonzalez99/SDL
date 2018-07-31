@@ -79,15 +79,15 @@ int frameActual = 0, maxFrame = 3;
 
 bool terminarPrograma = false; //Booleano para saber si el usuario quiere finalizar el programa
 
-SDL_Surface* background = NULL;
-SDL_Surface* message = NULL;
-SDL_Surface* screen = NULL;
-SDL_Surface* image = NULL;
+SDL_Surface* fondo = NULL;
+SDL_Surface* mensaje = NULL;
+SDL_Surface* pantalla = NULL;
+SDL_Surface* imagen = NULL;
 
-SDL_Event event;
+SDL_Event evento;
 
-TTF_Font* font = NULL;
-SDL_Color textColor = { 0, 0, 0 };
+TTF_Font* fuente = NULL;
+SDL_Color colorTexto = { 0, 0, 0 };
 
 Mix_Music* musica = NULL;
 

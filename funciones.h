@@ -3,9 +3,9 @@
 
 bool manejo_musica()
 {
-    if( event.type == SDL_KEYDOWN )
+    if( evento.type == SDL_KEYDOWN )
     {
-        switch(event.key.keysym.sym)
+        switch(evento.key.keysym.sym)
         {
         case SDLK_SPACE:
             {

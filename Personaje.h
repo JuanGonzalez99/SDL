@@ -66,10 +66,10 @@ void Personaje::cambiar_frame_movimiento()
 void Personaje::manejar_eventos()
 {
     //Si apreta el click izquierdo
-    if( event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT )
+    if( evento.type == SDL_MOUSEBUTTONDOWN && evento.button.button == SDL_BUTTON_LEFT )
     {
-        int x = event.button.x;
-        int y = event.button.y;
+        int x = evento.button.x;
+        int y = evento.button.y;
 
         //Si lo apretó en la imagen
         if( x >= offset.x && x <= (offset.x + frame.w) &&
@@ -80,53 +80,41 @@ void Personaje::manejar_eventos()
     }
 
     //Si suelta el click izquierdo
-    if( event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT )
+    if( evento.type == SDL_MOUSEBUTTONUP && evento.button.button == SDL_BUTTON_LEFT )
         arrastrar = false;
 
-    if( event.type == SDL_KEYDOWN )
+    if( evento.type == SDL_KEYDOWN )
     {
-        switch(event.key.keysym.sym)
+        switch(evento.key.keysym.sym)
         {
         case SDLK_w:
         case SDLK_UP:
         {
             yVel -= largoPasos;
-
-            cambiar_frame_movimiento();
         }break;
         case SDLK_a:
         case SDLK_LEFT:
         {
             xVel -= largoPasos;
-
-            cambiar_frame_movimiento();
         }break;
         case SDLK_s:
         case SDLK_DOWN:
         {
             yVel += largoPasos;
-
-            cambiar_frame_movimiento();
         }break;
         case SDLK_d:
         case SDLK_RIGHT:
         {
             xVel += largoPasos;
-
-            cambiar_frame_movimiento();
         }break;
         case SDLK_TAB:
         {
             if( getModoFantasma() == false )
-            {
-                SDL_SetAlpha(image, SDL_SRCALPHA, 100);
-                setModoFantasma(true);
-            }
+                SDL_SetAlpha(imagen, SDL_SRCALPHA, 100);
             else
-            {
-                SDL_SetAlpha(image, SDL_SRCALPHA, 255);
-                setModoFantasma(false);
-            }
+                SDL_SetAlpha(imagen, SDL_SRCALPHA, 255);
+
+            setModoFantasma(!getModoFantasma());
         }break;
         default:
         {}
@@ -134,9 +122,9 @@ void Personaje::manejar_eventos()
 
     }//Fin if
 
-    else if( event.type == SDL_KEYUP )
+    else if( evento.type == SDL_KEYUP )
     {
-        switch( event.key.keysym.sym )
+        switch( evento.key.keysym.sym )
         {
             case SDLK_w:
             case SDLK_UP:
@@ -166,10 +154,10 @@ void Personaje::manejar_eventos()
 void Personaje::mover()
 {
     //Si mueve el mouse mientras está haciendo click sobre la imagen
-    if( event.type == SDL_MOUSEMOTION && arrastrar )
+    if( evento.type == SDL_MOUSEMOTION && arrastrar )
     {
-        offset.x = event.motion.x - frame.w/2;
-        offset.y = event.motion.y - frame.h/2;
+        offset.x = evento.motion.x - frame.w/2;
+        offset.y = evento.motion.y - frame.h/2;
         if(offset.x < 0)
             offset.x = 0;
         if(offset.y < 0)
@@ -216,7 +204,7 @@ void Personaje::mostrar()
         frame.y = 2 * frame.h;
         cambiar_frame_movimiento();
     }
-    aplicar_superficie(image, screen, offset.x, offset.y, &frame);
+    aplicar_superficie(imagen, pantalla, offset.x, offset.y, &frame);
 }
 
 //Creamos un objeto de la clase Personaje
