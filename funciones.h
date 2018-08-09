@@ -13,52 +13,63 @@ bool manejo_musica()
     {
         switch(evento.key.keysym.sym)
         {
+        //Si toca la barra espaciadora
         case SDLK_SPACE:
             {
-                //If there is no music playing
+                //Si no se está reproduciendo música
                 if( Mix_PlayingMusic() == 0 )
                 {
-                    //Play the music
+                    //Se pone play
                     if( Mix_PlayMusic( musica, -1 ) == -1 )
                         return false;
                 }
-                //If music is being played
+                //Caso contrario
                 else
                 {
-                    //If the music is paused
+                    //Si la música está pausada
                     if( Mix_PausedMusic() == 1 )
-                        //Resume the music
+                        //Se reanuda
                         Mix_ResumeMusic();
 
-                    //If the music is playing
+                    //Caso contrario
                     else
-                        //Pause the music
+                        //Se pausa
                         Mix_PauseMusic();
                 }
             }break;
-            case SDLK_RETURN:
+        //Si toca la tecla Enter
+        case SDLK_RETURN:
             {
-                //Stop the music
+                //Para la música
                 Mix_HaltMusic();
             }break;
+        //Si toca 1
         case SDLK_1:
             {
+                //Paramos la música
                 Mix_HaltMusic();
+
+                //Liberamos la variable
                 Mix_FreeMusic(musica);
+
+                //Y le asignamos la nueva pista
                 musica = Mix_LoadMUS("Final Fantasy IX - The Place I'll Return To Someday.wav");
             }break;
+        //2
         case SDLK_2:
             {
                 Mix_HaltMusic();
                 Mix_FreeMusic(musica);
                 musica = Mix_LoadMUS("Final Fantasy IX - Loss of me.wav");
             }break;
+        //3
         case SDLK_3:
             {
                 Mix_HaltMusic();
                 Mix_FreeMusic(musica);
                 musica = Mix_LoadMUS("Final Fantasy IX - Vivi's Theme.wav");
             }break;
+        //4
         case SDLK_4:
             {
                 Mix_HaltMusic();
@@ -68,6 +79,8 @@ bool manejo_musica()
         default:{}
         }
     }
+
+    //Si hubo error alguno cargando la música, retornamos falso. Si no, verdadero
     if( musica == NULL )
         return false;
     else

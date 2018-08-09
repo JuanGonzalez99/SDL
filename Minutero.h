@@ -90,6 +90,7 @@ bool Minutero::estaPausado()
     return pausado;
 }
 
+//Creamos un minutero para regular los FPS
 Minutero fps;
 
 #endif // MINUTERO_H

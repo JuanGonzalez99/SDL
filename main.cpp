@@ -1,9 +1,9 @@
 //#############################################################################
-// ARCHIVO             : nombre de archivo.extension
-// AUTOR/ES            : nombre/s de autor/es
-// VERSION             : 0.01 beta.
-// FECHA DE CREACION   : dd/mm/aaaa.
-// ULTIMA ACTUALIZACION: dd/mm/aaaa.
+// ARCHIVO             : main.cpp.
+// AUTOR/ES            : Juan Gonzalez.
+// VERSION             : 0.04 beta.
+// FECHA DE CREACION   : 14/07/2018.
+// ULTIMA ACTUALIZACION: 09/08/2018.
 // LICENCIA            : GPL (General Public License) - Version 3.
 //
 //  **************************************************************************
@@ -26,9 +26,9 @@
 // 59 Temple Place - Suite 330, Boston, MA 02111-1307, EE.UU.
 
 //=============================================================================
-// SISTEMA OPERATIVO   : Linux (Ubuntu) / Windows XP / Windows 7.
+// SISTEMA OPERATIVO   : Windows 10.
 // IDE                 : Code::Blocks - 17.12
-// COMPILADOR          : GNU GCC Compiler (Linux) / MinGW (Windows).
+// COMPILADOR          : GNU GCC Compiler.
 // LICENCIA            : GPL (General Public License) - Version 3.
 //=============================================================================
 // DESCRIPCION:
@@ -64,20 +64,26 @@
 //*****************************************************************************
 //               DECLARACION DE VARIABLES Y PROTOTIPOS GLOBALES
 //=============================================================================
+//Constantes de la pantalla
 const int anchoPantalla = 800;
 const int altoPantalla = 600;
 const int bitsPorPixel = 32;
 
+//FPS del programa
 const int framesPorSegundo = 20;
 
+//Constantes de cada frame del sprite del personaje
 const int altoFrame = 192;
 const int anchoFrame = 144;
 
+//Cantidad de píxeles que se mueve el personaje
 int largoPasos = 15;
 
+//Variables para el cambio de frame de movimiento
 int frameActual = 0, maxFrame = 3;
 
-bool terminarPrograma = false; //Booleano para saber si el usuario quiere finalizar el programa
+//Booleano para saber si el usuario quiere finalizar el programa
+bool terminarPrograma = false;
 
 SDL_Surface* fondo = NULL;
 SDL_Surface* mensaje = NULL;
@@ -85,6 +91,7 @@ SDL_Surface* pantalla = NULL;
 SDL_Surface* imagen = NULL;
 SDL_Surface* boton = NULL;
 
+//Variable que maneja los eventos (teclas presionadas, movimiento del mouse, etc)
 SDL_Event evento;
 
 TTF_Font* fuente = NULL;
@@ -114,20 +121,17 @@ int main(int argc, char* args[])
 {
     //Inicializar SDL
     if( init() == false )
-        return 1;
+        return -1;
 
     //Carga de archivos
     if( cargar_archivos() == false )
         return 1;
 
-//    //Ponemos la música cuando empieza el programa
-//    if( Mix_PlayMusic( musica, -1 ) == -1 )
-//        return 1;
-
-    if( estructura() == false )
+    //Empieza el programa
+    if( menuPrincipal() == false )
     {
         limpiar_SDL();
-        return 1;
+        return 2;
     }
     else
     {

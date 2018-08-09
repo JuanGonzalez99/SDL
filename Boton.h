@@ -31,6 +31,7 @@ bool Boton::apreto_boton()
     //Si apreto el click izquierdo
     if( evento.type == SDL_MOUSEBUTTONDOWN && evento.button.button == SDL_BUTTON_LEFT )
     {
+        //Sacamos la posición en la que hizo click
         int x = evento.button.x;
         int y = evento.button.y;
 

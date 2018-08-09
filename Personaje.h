@@ -207,7 +207,7 @@ void Personaje::mostrar()
     aplicar_superficie(imagen, pantalla, offset.x, offset.y, &frame);
 }
 
-//Creamos un objeto de la clase Personaje
+//Creamos un objeto de la clase Personaje en el centro de la pantalla
 Personaje personajePrincipal((anchoPantalla - anchoFrame)/2, (altoPantalla - altoFrame)/2);
 
 #endif // PERSONAJE_H
